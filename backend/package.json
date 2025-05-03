@@ -1,0 +1,17 @@
+{
+  "name": "yt-shorts-backend",
+  "version": "1.0.0",
+  "description": "YouTube Shorts Downloader Backend",
+  "main": "server.js",
+  "engines": {
+    "node": "18.x"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0"
+  },
+  "type": "commonjs"
+}
