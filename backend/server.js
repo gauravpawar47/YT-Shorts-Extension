@@ -9,6 +9,7 @@ app.use(cors());
 
 app.get("/download", (req, res) => {
   const videoURL = req.query.url;
+  const quality = req.query.quality || "best";
 
   if (!videoURL) {
     return res.status(400).send("Missing video URL");
@@ -28,7 +29,25 @@ app.get("/download", (req, res) => {
       .replace(/[\\/:*?"<>|]/g, "_")
       .replace(/\s+/g, "_");
     const outputPath = path.join(__dirname, `${title}.mp4`);
-    const downloadCommand = `yt-dlp -f bestvideo+bestaudio --merge-output-format mp4 -o "${outputPath}" ${videoURL}`;
+
+    // Format selector based on quality
+    let formatSelector;
+    switch (quality) {
+      case "1080":
+        formatSelector = "bv*[height<=1080][vcodec^=avc1]+ba[ext=m4a]";
+        break;
+      case "720":
+        formatSelector = "bv*[height<=720][vcodec^=avc1]+ba[ext=m4a]";
+        break;
+      case "480":
+        formatSelector = "bv*[height<=480][vcodec^=avc1]+ba[ext=m4a]";
+        break;
+      default:
+        formatSelector = "bv*[vcodec^=avc1]+ba[ext=m4a]"; // Best available
+        break;
+    }
+
+    const downloadCommand = `yt-dlp -f "${formatSelector}" --merge-output-format mp4 -o "${outputPath}" ${videoURL}`;
 
     exec(
       downloadCommand,
