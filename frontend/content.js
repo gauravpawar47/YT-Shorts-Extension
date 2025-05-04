@@ -3,24 +3,34 @@ let currentUrl = location.href;
 function injectDownloadButton() {
   if (document.getElementById("yt-shorts-download-btn")) return;
 
+  const isDarkTheme = () => {
+    return (
+      document.documentElement.hasAttribute("dark") ||
+      document.querySelector("ytd-app")?.hasAttribute("dark")
+    );
+  };
+
+  const isDark = isDarkTheme();
+
   const container = document.createElement("div");
   container.id = "yt-shorts-download-btn";
   container.style.position = "fixed";
   container.style.top = "80px";
   container.style.right = "20px";
   container.style.zIndex = "9999";
-  container.style.background = "#FF0000";
+  container.style.background = isDark ? "#282828" : "#f9f9f9";
   container.style.borderRadius = "8px";
   container.style.padding = "10px";
-  container.style.color = "#fff";
+  container.style.color = isDark ? "#fff" : "#000";
   container.style.fontFamily = "sans-serif";
   container.style.boxShadow = "0 4px 8px rgba(0,0,0,0.3)";
+  container.style.width = "180px";
 
-  // Quality selector (only for video)
+  // Quality selector
   const select = document.createElement("select");
   select.style.padding = "6px";
   select.style.borderRadius = "5px";
-  select.style.border = "none";
+  select.style.border = "1px solid #ccc";
   select.style.marginBottom = "8px";
   select.style.display = "block";
   select.style.width = "100%";
@@ -28,16 +38,16 @@ function injectDownloadButton() {
   ["best", "1080", "720", "480"].forEach((q) => {
     const option = document.createElement("option");
     option.value = q;
-    option.text = `${q}p`;
+    option.text = q === "best" ? "Best (Auto)" : `${q}p`;
     select.appendChild(option);
   });
 
-  // Main download button
+  // Download button
   const downloadBtn = document.createElement("button");
   downloadBtn.innerText = "🎞️ Download Shorts";
-  downloadBtn.style.padding = "8px 12px";
-  downloadBtn.style.color = "white";
-  downloadBtn.style.background = "#000";
+  downloadBtn.style.padding = "10px";
+  downloadBtn.style.color = "#fff";
+  downloadBtn.style.background = "#FF0000"; // red
   downloadBtn.style.border = "none";
   downloadBtn.style.borderRadius = "5px";
   downloadBtn.style.cursor = "pointer";
@@ -60,8 +70,17 @@ function injectDownloadButton() {
   toggle.type = "checkbox";
   toggle.style.transform = "scale(1.2)";
   toggle.style.cursor = "pointer";
+  toggle.setAttribute("aria-label", "Toggle audio-only download");
 
-  // Append toggle
+  // Inject red checkbox tick color
+  const checkboxStyle = document.createElement("style");
+  checkboxStyle.textContent = `
+    input[type="checkbox"] {
+      accent-color: #FF0000;
+    }
+  `;
+  document.head.appendChild(checkboxStyle);
+
   toggleWrapper.appendChild(toggleLabel);
   toggleWrapper.appendChild(toggle);
 
@@ -82,14 +101,13 @@ function injectDownloadButton() {
     const selectedQuality = select.value;
     const isAudio = toggle.checked;
 
-    const apiUrl = `http://localhost:3000/download?url=${encodeURIComponent(videoUrl)}${
-      isAudio ? "&type=audio" : `&quality=${selectedQuality}`
-    }`;
+    const apiUrl = `http://localhost:3000/download?url=${encodeURIComponent(
+      videoUrl
+    )}${isAudio ? "&type=audio" : `&quality=${selectedQuality}`}`;
 
     window.open(apiUrl, "_blank");
   });
 
-  // Final append
   container.appendChild(select);
   container.appendChild(downloadBtn);
   container.appendChild(toggleWrapper);
