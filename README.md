@@ -1,34 +1,66 @@
-# 📥 YouTube Shorts Downloader (Extension)
+# 📥 YouTube Shorts Downloader (Chrome Extension)
 
 A clean, fast, and hybrid solution that allows users to **download YouTube Shorts** as video or audio with a single click. It combines a **Chrome Extension frontend** with a **Node.js + yt-dlp backend** to ensure high-quality downloads and format control.
+
+---
+
+## 🎬 Demo & Screenshots
+
+### ▶️ Demo Video
+
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=S3j9kYdmvMI">
+    <img src="./screenshots/icon.png" alt="Demo Video" width="180">
+  </a>
+</p>
+
+> _Click the image above or [watch the demo](https://www.youtube.com/watch?v=S3j9kYdmvMI)_
+
+---
+
+### 🖼️ Screenshots
+
+#### 🔘 Download Button Injected
+![Download Button](./screenshots/1_server.png)
+
+#### 🎞️ Format Selection UI
+![Format Selection](./screenshots/4_video_options.png)
+
+#### 🎧 Audio Download Option
+![Audio Download](./screenshots/3_audio_download.png)
+
+#### ✅ Successfully Downloaded
+![Downloaded](./screenshots/5_downloaded.png)
 
 ---
 
 ## 🔧 Tech Stack
 
 ### 🧩 Frontend (Chrome Extension)
-- **Manifest V3** – Latest Chrome extension architecture
-- **JavaScript** – Injects logic into YouTube Shorts pages
-- **DOM Manipulation** – Adds custom download buttons
-- **CORS** – Communicates with the local server at `localhost:3000`
+
+* **Manifest V3** – Latest Chrome extension architecture  
+* **JavaScript** – Injects logic into YouTube Shorts pages  
+* **DOM Manipulation** – Adds custom download buttons  
+* **CORS** – Communicates with local Node.js server  
 
 ### 🖥 Backend (Node.js Server)
-- **Node.js + Express** – API server handling download requests
-- **yt-dlp** – Core tool to download video/audio from YouTube
-- **FFmpeg (via yt-dlp)** – Merges video and audio streams
-- **child_process** – Executes shell commands
-- **fs, path** – File handling and cleanup after download
+
+* **Node.js + Express** – Handles download requests  
+* **yt-dlp** – Core tool to download video/audio from YouTube  
+* **FFmpeg** – Merges video and audio streams  
+* **child_process** – Executes shell commands  
+* **fs, path** – Handles files and cleanup  
 
 ---
 
 ## ✨ Features
 
-- 🎯 **Auto-detects YouTube Shorts pages**
-- 🔘 **Adds Download Button** with MP4 or MP3 options
-- 🎞️ **Quality Selection** (1080p, 720p, 480p, best available)
-- 🎧 **Audio-only download** (MP3 via yt-dlp)
-- 🔃 **Temporary file cleanup** after each download
-- 🧠 **Local-only, secure, and private**
+* 🎯 **Auto-detects YouTube Shorts pages**
+* 🔘 **Adds Download Button** with MP4 or MP3 options
+* 🎞️ **Select Video Quality** (1080p, 720p, etc.)
+* 🎧 **Audio-only download** (MP3 support)
+* 🔃 **Automatic file cleanup** after each download
+* 🔐 **100% local & secure** – No data leaks or trackers
 
 ---
 
@@ -44,7 +76,13 @@ yt-shorts-downloader/
 │   └── icon.png
 │
 ├── server/               # Node.js backend
-│   ├── server.js         # Express API with yt-dlp
+│   ├── server.js         # Express API + yt-dlp
+│
+├── screenshots/          # Screenshots for README
+│   ├── 1\_server.png
+│   ├── 3\_audio\_download.png
+│   ├── 4\_video\_options.png
+│   └── 5\_downloaded.png
 │
 └── README.md
 
@@ -56,55 +94,41 @@ yt-shorts-downloader/
 
 ### 1️⃣ Backend Setup (Node.js + yt-dlp)
 
-1. Navigate to the `server/` directory:
-
 ```bash
 cd server
+npm install express cors
+pip install yt-dlp   # Ensure yt-dlp is in PATH
 ````
 
-2. Install dependencies:
-
-```bash
-npm install express cors
-```
-
-3. Ensure you have [`yt-dlp`](https://github.com/yt-dlp/yt-dlp) installed and available in PATH:
-
-```bash
-pip install yt-dlp
-```
-
-> You must also have **FFmpeg** installed (yt-dlp uses it internally).
-> Download from: [https://ffmpeg.org/download.html](https://ffmpeg.org/download.html)
-
-4. Start the server:
+➡️ Make sure **FFmpeg** is also installed
+🔗 [Download FFmpeg](https://ffmpeg.org/download.html)
 
 ```bash
 node server.js
 ```
 
-✅ Server will run at `http://localhost:3000`
+> Server will start at `http://localhost:3000`
 
 ---
 
 ### 2️⃣ Frontend Setup (Chrome Extension)
 
-1. Open Chrome and go to `chrome://extensions/`
+1. Open Chrome → `chrome://extensions/`
 2. Enable **Developer Mode**
 3. Click **Load Unpacked**
-4. Select the `extension/` directory
-5. Visit any Shorts URL like `https://youtube.com/shorts/xyz`
-6. Click the **Download** button that appears below the video
+4. Select the `extension/` folder
+5. Visit a Shorts URL like `https://youtube.com/shorts/xyz`
+6. Click the **Download** button shown below the video
 
 ---
 
 ## ⚙️ Permissions Summary
 
-| Permission         | Used For                               |
-| ------------------ | -------------------------------------- |
-| `scripting`        | Injecting logic on Shorts pages        |
-| `activeTab`        | Running code on the active YouTube tab |
-| `host_permissions` | `http://localhost:3000/*` for dev API  |
+| Permission         | Purpose                                    |
+| ------------------ | ------------------------------------------ |
+| `scripting`        | Inject code into YouTube Shorts pages      |
+| `activeTab`        | Interact with the current YouTube tab      |
+| `host_permissions` | Allow API calls to `http://localhost:3000` |
 
 ---
 
@@ -114,37 +138,35 @@ node server.js
 
 * `express`
 * `cors`
-* `fs`, `path`
-* `child_process` (built-in)
+* `fs`, `path`, `child_process` (built-in)
 
 ### External Tools:
 
-* [`yt-dlp`](https://github.com/yt-dlp/yt-dlp) – downloads and merges
-* [`ffmpeg`](https://ffmpeg.org/) – required by yt-dlp
+* [`yt-dlp`](https://github.com/yt-dlp/yt-dlp)
+* [`ffmpeg`](https://ffmpeg.org/)
 
 ---
 
 ## 🛡️ Security & Cleanup
 
-* 🔐 All downloads happen **locally**
-* 🗑️ Files are deleted automatically after download
-* 🚫 No user tracking, no 3rd-party API calls
+* 🔐 Downloads are handled **locally**
+* 🗑️ Temporary files are deleted after download
+* 🚫 No 3rd-party API, no tracking
 
 ---
 
 ## 🛠️ Author & Credits
 
 Built with ❤️ by **Gaurav Pawar**
-
-🔗 [Portfolio](https://gauravpawar.netlify.app)
+🌐 [gauravpawar.netlify.app](https://gauravpawar.netlify.app)
 
 ---
 
 ## 🧠 Future Additions
 
-* ✅ Add format dropdown in the UI
+* ✅ Format dropdown UI
 * ☁️ Optional deployment via Render or Railway
-* 📱 Better mobile UX (extension popup or UI modal)
-* 🧩 Auto quality detection and fallback
+* 📱 Extension popup for mobile-friendliness
+* 🧠 Auto quality fallback & best format detection
 
----
+
